@@ -1,13 +1,13 @@
-package com.horno.webHostingWeb;
+package com.TuWebYa.horno;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class WebHostingWebApplication {
+public class TuWebYaApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(WebHostingWebApplication.class, args);
+		SpringApplication.run(TuWebYaApplication.class, args);
 	}
 
 }
