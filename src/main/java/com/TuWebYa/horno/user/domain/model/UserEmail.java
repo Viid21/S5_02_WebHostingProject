@@ -16,15 +16,11 @@ public class UserEmail {
     }
 
     public static UserEmail of(String rawEmail) {
-        if (rawEmail == null) {
-            throw new InvalidEmailException("Email cannot be null");
+        if (rawEmail == null || rawEmail.trim().isEmpty()) {
+            throw new InvalidEmailException("Email cannot be empty");
         }
 
         String email = rawEmail.trim();
-
-        if (email.isEmpty()) {
-            throw new InvalidEmailException("Email cannot be empty");
-        }
 
         if (!EMAIL_REGEX.matcher(email).matches()) {
             throw new InvalidEmailException("Invalid email format: " + rawEmail);
