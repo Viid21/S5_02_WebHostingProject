@@ -3,7 +3,6 @@ package com.TuWebYa.horno.user.domain.model;
 import java.util.UUID;
 
 public final class UserId {
-
     private final UUID value;
 
     private UserId(UUID value) {
