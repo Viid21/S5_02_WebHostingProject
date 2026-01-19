@@ -25,8 +25,9 @@ public class UserRepositoryImpl implements UserRepositoryPort {
     }
 
     @Override
-    public Optional<User> findById(UUID id) {
-        return Optional.empty();
+    public Mono<User> findById(UUID id) {
+        return repository.findById(id)
+                .map(UserMapper::toDomain);
     }
 
     @Override

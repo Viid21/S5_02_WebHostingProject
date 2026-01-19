@@ -6,6 +6,7 @@ import com.TuWebYa.horno.user.application.port.in.CreateUserUseCase;
 import com.TuWebYa.horno.user.application.dto.request.CreateUserRequest;
 import com.TuWebYa.horno.user.application.dto.response.CreateUserResponse;
 import com.TuWebYa.horno.user.application.port.in.RetrieveUserUseCase;
+import com.TuWebYa.horno.user.application.query.RetrieveUserQuery;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -53,7 +54,7 @@ public class HttpUserController {
     }
 
     @GetMapping("/{id}")
-    public Mono<RetrieveUserResponse> retrieveUser(@RequestParam UUID id){
-
+    public Mono<RetrieveUserResponse> retrieveUser(@RequestParam UUID id) {
+        return retrieveUserUseCase.executeById(new RetrieveUserQuery(id));
     }
 }

@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface UserRepositoryPort {
     Mono<User> save(User newUser);
-    Optional<User> findById(UUID id);
+    Mono<User> findById(UUID id);
     Flux<User> findAll();
     Optional<User> update(UUID id, User user);
     boolean deleteById(UUID id);
