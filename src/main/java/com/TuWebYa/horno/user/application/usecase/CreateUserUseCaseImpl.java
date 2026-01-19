@@ -31,6 +31,5 @@ public class CreateUserUseCaseImpl implements CreateUserUseCase {
                         saved.getEmail().value(),
                         saved.getRole().name()
                 ));
-
     }
 }

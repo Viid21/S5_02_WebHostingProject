@@ -4,6 +4,7 @@ import com.TuWebYa.horno.user.application.port.out.UserRepositoryPort;
 import com.TuWebYa.horno.user.domain.model.User;
 import com.TuWebYa.horno.user.infra.mapper.UserMapper;
 import com.TuWebYa.horno.user.infra.repository.UserR2dbcRepository;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -29,8 +30,9 @@ public class UserRepositoryImpl implements UserRepositoryPort {
     }
 
     @Override
-    public List<User> findAll() {
-        return List.of();
+    public Flux<User> findAll() {
+        return repository.findAll()
+                .map(UserMapper::toDomain);
     }
 
     @Override
