@@ -9,10 +9,6 @@ public final class UserId {
         this.value = value;
     }
 
-    public static UserId newId() {
-        return new UserId(UUID.randomUUID());
-    }
-
     public static UserId from(String raw) {
         return new UserId(UUID.fromString(raw));
     }
