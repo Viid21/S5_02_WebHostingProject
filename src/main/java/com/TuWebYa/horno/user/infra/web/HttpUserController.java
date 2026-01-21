@@ -49,14 +49,7 @@ public class HttpUserController {
                         request.role()
                 ))
                 .flatMap(createUserUseCase::createUser)
-                .map(response -> ResponseEntity.created(URI.create("/user/" + response.id())).body(
-                        new CreateUserResponse(
-                                response.id(),
-                                response.name(),
-                                response.email(),
-                                response.role()
-                        )
-                ));
+                .map(response -> ResponseEntity.created(URI.create("/user/" + response.id())).body(response));
     }
 
     @GetMapping
@@ -79,13 +72,7 @@ public class HttpUserController {
                         request.role(),
                         request.password()
                 ))
-                .flatMap(updateUserUseCase::update)
-                .map(response -> new UpdateUserResponse(
-                        response.id(),
-                        response.name(),
-                        response.email(),
-                        response.role()
-                ));
+                .flatMap(updateUserUseCase::update);
     }
 
     @DeleteMapping("/{id}")

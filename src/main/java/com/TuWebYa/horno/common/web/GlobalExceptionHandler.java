@@ -1,4 +1,4 @@
-package com.TuWebYa.horno.common;
+package com.TuWebYa.horno.common.web;
 
 import com.TuWebYa.horno.user.application.exception.UserNotFoundException;
 import com.TuWebYa.horno.user.domain.exception.InvalidEmailException;
