@@ -6,8 +6,10 @@ import com.TuWebYa.horno.user.application.exception.UserNotFoundException;
 import com.TuWebYa.horno.user.application.port.in.UpdateUserUseCase;
 import com.TuWebYa.horno.user.application.port.out.UserRepositoryPort;
 import com.TuWebYa.horno.user.domain.model.*;
+import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+@Service
 public class UpdateUserUseCaseImpl implements UpdateUserUseCase {
     private final UserRepositoryPort userRepositoryPort;
 

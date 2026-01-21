@@ -2,7 +2,9 @@ package com.TuWebYa.horno.user.infra.mapper;
 
 import com.TuWebYa.horno.user.domain.model.*;
 import com.TuWebYa.horno.user.infra.entity.UserEntity;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserMapper {
     public static UserEntity toEntity(User user){
         return new UserEntity(

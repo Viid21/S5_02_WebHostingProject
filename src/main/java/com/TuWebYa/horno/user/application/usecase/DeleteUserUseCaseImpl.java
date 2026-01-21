@@ -3,8 +3,10 @@ package com.TuWebYa.horno.user.application.usecase;
 import com.TuWebYa.horno.user.application.command.DeleteUserCommand;
 import com.TuWebYa.horno.user.application.port.in.DeleteUserUseCase;
 import com.TuWebYa.horno.user.application.port.out.UserRepositoryPort;
+import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+@Service
 public class DeleteUserUseCaseImpl implements DeleteUserUseCase {
     private final UserRepositoryPort userRepositoryPort;
 

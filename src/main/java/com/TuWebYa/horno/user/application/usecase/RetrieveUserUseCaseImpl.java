@@ -5,9 +5,11 @@ import com.TuWebYa.horno.user.application.exception.UserNotFoundException;
 import com.TuWebYa.horno.user.application.port.in.RetrieveUserUseCase;
 import com.TuWebYa.horno.user.application.port.out.UserRepositoryPort;
 import com.TuWebYa.horno.user.application.query.RetrieveUserQuery;
+import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+@Service
 public class RetrieveUserUseCaseImpl implements RetrieveUserUseCase {
     private final UserRepositoryPort userRepositoryPort;
 

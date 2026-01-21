@@ -5,8 +5,10 @@ import com.TuWebYa.horno.user.domain.model.*;
 import com.TuWebYa.horno.user.application.port.in.CreateUserUseCase;
 import com.TuWebYa.horno.user.application.port.out.UserRepositoryPort;
 import com.TuWebYa.horno.user.application.dto.response.CreateUserResponse;
+import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+@Service
 public class CreateUserUseCaseImpl implements CreateUserUseCase {
     private final UserRepositoryPort userRepositoryPort;
 
