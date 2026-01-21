@@ -1,7 +1,8 @@
 package com.TuWebYa.horno.user.application.port.in;
 
-import java.util.UUID;
+import com.TuWebYa.horno.user.application.command.DeleteUserCommand;
+import reactor.core.publisher.Mono;
 
 public interface DeleteUserUseCase {
-    boolean deleteUser(UUID id);
+    Mono<Void> deleteUser(DeleteUserCommand command);
 }

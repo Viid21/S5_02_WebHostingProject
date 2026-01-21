@@ -7,8 +7,6 @@ import com.TuWebYa.horno.user.infra.repository.UserR2dbcRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public class UserRepositoryImpl implements UserRepositoryPort {
@@ -37,12 +35,7 @@ public class UserRepositoryImpl implements UserRepositoryPort {
     }
 
     @Override
-    public Optional<User> update(UUID id, User user) {
-        return Optional.empty();
-    }
-
-    @Override
-    public boolean deleteById(UUID id) {
-        return false;
+    public Mono<Void> deleteById(UUID id) {
+        return repository.deleteById(id);
     }
 }

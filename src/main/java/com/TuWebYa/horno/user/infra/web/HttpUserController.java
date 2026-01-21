@@ -1,6 +1,7 @@
 package com.TuWebYa.horno.user.infra.web;
 
 import com.TuWebYa.horno.user.application.command.CreateUserCommand;
+import com.TuWebYa.horno.user.application.command.DeleteUserCommand;
 import com.TuWebYa.horno.user.application.command.UpdateUserCommand;
 import com.TuWebYa.horno.user.application.dto.request.UpdateUserRequest;
 import com.TuWebYa.horno.user.application.dto.response.RetrieveUserResponse;
@@ -8,6 +9,7 @@ import com.TuWebYa.horno.user.application.dto.response.UpdateUserResponse;
 import com.TuWebYa.horno.user.application.port.in.CreateUserUseCase;
 import com.TuWebYa.horno.user.application.dto.request.CreateUserRequest;
 import com.TuWebYa.horno.user.application.dto.response.CreateUserResponse;
+import com.TuWebYa.horno.user.application.port.in.DeleteUserUseCase;
 import com.TuWebYa.horno.user.application.port.in.RetrieveUserUseCase;
 import com.TuWebYa.horno.user.application.port.in.UpdateUserUseCase;
 import com.TuWebYa.horno.user.application.query.RetrieveUserQuery;
@@ -27,13 +29,14 @@ public class HttpUserController {
     private final CreateUserUseCase createUserUseCase;
     private final RetrieveUserUseCase retrieveUserUseCase;
     private final UpdateUserUseCase updateUserUseCase;
+    private final DeleteUserUseCase deleteUserUseCase;
 
-    public HttpUserController(CreateUserUseCase createUserUseCase,
-                              RetrieveUserUseCase retrieveUserUseCase,
-                              UpdateUserUseCase updateUserUseCase) {
+    public HttpUserController(CreateUserUseCase createUserUseCase, RetrieveUserUseCase retrieveUserUseCase,
+                              UpdateUserUseCase updateUserUseCase, DeleteUserUseCase deleteUserUseCase) {
         this.createUserUseCase = createUserUseCase;
         this.retrieveUserUseCase = retrieveUserUseCase;
         this.updateUserUseCase = updateUserUseCase;
+        this.deleteUserUseCase = deleteUserUseCase;
     }
 
     @PostMapping("/new")
@@ -77,11 +80,17 @@ public class HttpUserController {
                         request.password()
                 ))
                 .flatMap(updateUserUseCase::update)
-                .map(user -> new UpdateUserResponse(
-                        user.id(),
-                        user.name(),
-                        user.email(),
-                        user.role()
+                .map(response -> new UpdateUserResponse(
+                        response.id(),
+                        response.name(),
+                        response.email(),
+                        response.role()
                 ));
+    }
+
+    @DeleteMapping("/{id}")
+    public Mono<ResponseEntity<Void>> delete(@PathVariable UUID id) {
+        return deleteUserUseCase.deleteUser(new DeleteUserCommand(id))
+                .thenReturn(ResponseEntity.noContent().build());
     }
 }
