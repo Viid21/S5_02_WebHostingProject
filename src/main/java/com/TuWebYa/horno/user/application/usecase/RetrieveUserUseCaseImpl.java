@@ -16,7 +16,7 @@ public class RetrieveUserUseCaseImpl implements RetrieveUserUseCase {
     }
 
     @Override
-    public Mono<RetrieveUserResponse> executeById(RetrieveUserQuery query) {
+    public Mono<RetrieveUserResponse> retrieveById(RetrieveUserQuery query) {
         return userRepositoryPort.findById(query.id())
                 .switchIfEmpty(Mono.error(new UserNotFoundException("User with id: " + query.id() + " not found.")))
                 .map(user -> new RetrieveUserResponse(
@@ -28,7 +28,7 @@ public class RetrieveUserUseCaseImpl implements RetrieveUserUseCase {
     }
 
     @Override
-    public Flux<RetrieveUserResponse> executeAllUsers() {
+    public Flux<RetrieveUserResponse> retrieveAllUsers() {
         return userRepositoryPort.findAll()
                 .switchIfEmpty(Mono.error(new UserNotFoundException("User list empty.")))
                 .map(user -> new RetrieveUserResponse(
