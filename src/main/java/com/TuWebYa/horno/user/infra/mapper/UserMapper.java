@@ -17,12 +17,14 @@ public class UserMapper {
     }
 
     public static User toDomain(UserEntity entity) {
-        return new User(
-                UserId.from(String.valueOf(entity.id())),
-                UserName.of(entity.name()),
+        User user = new User(
                 UserEmail.of(entity.email()),
-                UserPassword.fromHashed(entity.password()),
-                UserRole.valueOf(entity.role())
+                UserPassword.fromHashed(entity.password())
         );
+        user.setId(UserId.from(String.valueOf(entity.id())));
+        user.setName(UserName.of(entity.name()));
+        user.setRole(UserRole.valueOf(entity.role()));
+
+        return user;
     }
 }
