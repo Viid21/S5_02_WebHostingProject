@@ -21,16 +21,11 @@ public class UpdateUserUseCaseImpl implements UpdateUserUseCase {
     public Mono<UpdateUserResponse> update(UpdateUserCommand command) {
         return userRepositoryPort.findById(command.id())
                 .switchIfEmpty(Mono.error(new UserNotFoundException("User with id: " + command.id() + " not found.")))
-                .flatMap(existing -> {
-                    User updated = new User(
-                            UserId.from(command.id().toString()),
-                            command.name() != null ? UserName.of(command.name()) : existing.getName(),
-                            command.email() != null ? UserEmail.of(command.email()) : existing.getEmail(),
-                            command.password() != null ? UserPassword.fromPlainText(command.password()) :
-                            UserPassword.fromHashed(existing.getPassword().hashed()),
-                            command.role() != null ? UserRole.valueOf(command.role()) : existing.getRole()
-                    );
-                    return userRepositoryPort.save(updated);
+                .flatMap(user -> {
+                    user.setName(command.name() != null ? UserName.of(command.name()) : user.getName());
+                    user.setEmail(command.email() != null ? UserEmail.of(command.email()) : user.getEmail());
+                    user.setRole(command.role() != null ? UserRole.valueOf(command.role()) : user.getRole());
+                    return userRepositoryPort.save(user);
                 })
                 .map(saved -> new UpdateUserResponse(
                         saved.getId().value().toString(),
