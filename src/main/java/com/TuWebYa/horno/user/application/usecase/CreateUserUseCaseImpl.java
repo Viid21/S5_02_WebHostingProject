@@ -19,11 +19,8 @@ public class CreateUserUseCaseImpl implements CreateUserUseCase {
     @Override
     public Mono<CreateUserResponse> createUser(CreateUserCommand command) {
         User user = new User(
-                null,
-                UserName.of(command.name()),
                 UserEmail.of(command.email()),
-                UserPassword.fromPlainText(command.password()),
-                UserRole.valueOf(command.role())
+                UserPassword.fromPlainText(command.password())
         );
 
         return userRepositoryPort.save(user)

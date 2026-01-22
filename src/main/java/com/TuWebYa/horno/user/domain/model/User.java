@@ -1,18 +1,18 @@
 package com.TuWebYa.horno.user.domain.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Objects;
 
-@Getter
-@AllArgsConstructor
+@Data
+@RequiredArgsConstructor
 @NoArgsConstructor
 public class User {
     private UserId id;
     private UserName name;
+    @NonNull
     private UserEmail email;
+    @NonNull
     private UserPassword password;
     private UserRole role;
 
