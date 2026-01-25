@@ -1,4 +1,4 @@
 package com.TuWebYa.horno.user.application.command;
 
-public record CreateUserCommand(String name, String password, String email, String role) {
+public record CreateUserCommand(String email, String password, String role, String authenticatedUserRole) {
 }

@@ -25,6 +25,12 @@ public class UserRepositoryImpl implements UserRepositoryPort {
     }
 
     @Override
+    public Mono<User> findByEmail(String email){
+        return repository.findByEmail(email)
+                .map(UserMapper::toDomain);
+    }
+
+    @Override
     public Mono<User> findById(UUID id) {
         return repository.findById(id)
                 .map(UserMapper::toDomain);

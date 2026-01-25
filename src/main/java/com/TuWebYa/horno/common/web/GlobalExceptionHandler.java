@@ -1,5 +1,7 @@
 package com.TuWebYa.horno.common.web;
 
+import com.TuWebYa.horno.user.application.exception.AuthIncorrectPasswordException;
+import com.TuWebYa.horno.user.application.exception.UserForbiddenException;
 import com.TuWebYa.horno.user.application.exception.UserNotFoundException;
 import com.TuWebYa.horno.user.domain.exception.InvalidEmailException;
 import com.TuWebYa.horno.user.domain.exception.InvalidNameException;
@@ -28,6 +30,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
     public Mono<ResponseEntity<String>> handleUserNotFound(UserNotFoundException ex) {
+        return Mono.just(ResponseEntity.badRequest().body(ex.getMessage()));
+    }
+
+    @ExceptionHandler(UserForbiddenException.class)
+    public Mono<ResponseEntity<String>> handleUserForbidden(UserForbiddenException ex) {
+        return Mono.just(ResponseEntity.badRequest().body(ex.getMessage()));
+    }
+
+    @ExceptionHandler(AuthIncorrectPasswordException.class)
+    public Mono<ResponseEntity<String>> handleAuthIncorrectPassword(AuthIncorrectPasswordException ex) {
         return Mono.just(ResponseEntity.badRequest().body(ex.getMessage()));
     }
 }

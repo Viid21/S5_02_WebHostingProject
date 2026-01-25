@@ -8,6 +8,7 @@ import java.util.UUID;
 
 public interface UserRepositoryPort {
     Mono<User> save(User newUser);
+    Mono<User> findByEmail(String email);
     Mono<User> findById(UUID id);
     Flux<User> findAll();
     Mono<Void> deleteById(UUID id);

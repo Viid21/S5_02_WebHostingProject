@@ -2,6 +2,7 @@ package com.TuWebYa.horno.user.application.usecase;
 
 import com.TuWebYa.horno.user.application.command.UpdateUserCommand;
 import com.TuWebYa.horno.user.application.dto.response.UpdateUserResponse;
+import com.TuWebYa.horno.user.application.exception.UserForbiddenException;
 import com.TuWebYa.horno.user.application.exception.UserNotFoundException;
 import com.TuWebYa.horno.user.application.port.in.UpdateUserUseCase;
 import com.TuWebYa.horno.user.application.port.out.UserRepositoryPort;
@@ -22,6 +23,11 @@ public class UpdateUserUseCaseImpl implements UpdateUserUseCase {
         return userRepositoryPort.findById(command.id())
                 .switchIfEmpty(Mono.error(new UserNotFoundException("User with id: " + command.id() + " not found.")))
                 .flatMap(user -> {
+                    if (!command.authenticatedUserId().equals(command.id())
+                            && command.authenticatedUserRole().equals("USER")) {
+                        return Mono.error(new UserForbiddenException());
+                    }
+
                     user.setName(command.name() != null ? UserName.of(command.name()) : user.getName());
                     user.setEmail(command.email() != null ? UserEmail.of(command.email()) : user.getEmail());
                     user.setRole(command.role() != null ? UserRole.valueOf(command.role()) : user.getRole());

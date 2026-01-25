@@ -14,6 +14,7 @@ public class User {
     private UserEmail email;
     @NonNull
     private UserPassword password;
+    @NonNull
     private UserRole role;
 
     @Override
