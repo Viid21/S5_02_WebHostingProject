@@ -1,6 +1,6 @@
 package com.TuWebYa.horno.user.infra.web;
 
-import com.TuWebYa.horno.common.security.infra.SecurityContextService;
+import com.TuWebYa.horno.auth.infra.security.SecurityContextService;
 import com.TuWebYa.horno.user.application.command.CreateUserCommand;
 import com.TuWebYa.horno.user.application.command.DeleteUserCommand;
 import com.TuWebYa.horno.user.application.command.UpdateUserCommand;
