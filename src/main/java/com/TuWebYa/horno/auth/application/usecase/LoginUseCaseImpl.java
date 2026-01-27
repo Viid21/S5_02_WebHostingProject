@@ -32,12 +32,16 @@ public class LoginUseCaseImpl implements LoginUseCase {
                         return Mono.error(new InvalidCredentialsException());
                     }
 
-                    String token = jwtService.generateToken(
+                    String accesToken = jwtService.generateAccessToken(
                             user.getId().value().toString(),
                             user.getRole().name()
                     );
 
-                    return Mono.just(new LoginAuthResponse(token));
+                    String refreshToken = jwtService.generateRefreshToken(
+                            user.getId().value().toString()
+                    );
+
+                    return Mono.just(new LoginAuthResponse(accesToken, refreshToken));
                 });
     }
 

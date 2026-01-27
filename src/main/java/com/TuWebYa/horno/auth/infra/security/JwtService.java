@@ -19,12 +19,21 @@ public class JwtService {
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    public String generateToken(String userId, String role) {
+    public String generateAccessToken(String userId, String role) {
         return Jwts.builder()
                 .setSubject(userId)
                 .claim("role", role)
                 .setIssuedAt(new Date())
                 .setExpiration(Date.from(Instant.now().plus(1, ChronoUnit.DAYS)))
+                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public String generateRefreshToken(String userId) {
+        return Jwts.builder()
+                .setSubject(userId)
+                .setIssuedAt(new Date())
+                .setExpiration(Date.from(Instant.now().plus(30, ChronoUnit.DAYS)))
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
     }

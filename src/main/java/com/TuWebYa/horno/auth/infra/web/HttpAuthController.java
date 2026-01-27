@@ -3,6 +3,7 @@ package com.TuWebYa.horno.auth.infra.web;
 import com.TuWebYa.horno.auth.application.dto.request.LoginAuthRequest;
 import com.TuWebYa.horno.auth.application.dto.request.RegisterAuthRequest;
 import com.TuWebYa.horno.auth.application.dto.response.LoginAuthResponse;
+import com.TuWebYa.horno.auth.application.dto.response.RefreshAuthResponse;
 import com.TuWebYa.horno.auth.application.dto.response.RegisterAuthResponse;
 import com.TuWebYa.horno.auth.application.port.in.LoginUseCase;
 import com.TuWebYa.horno.auth.infra.security.JwtService;
@@ -46,7 +47,7 @@ public class HttpAuthController {
 
                     return createUserUseCase.createUser(command)
                             .flatMap(user -> {
-                                String token = jwtService.generateToken(
+                                String token = jwtService.generateAccessToken(
                                         user.id(),
                                         user.role()
                                 );
@@ -68,7 +69,7 @@ public class HttpAuthController {
     }
 
     @PostMapping("/refresh")
-    public Mono<LoginAuthResponse> refresh(){
+    public Mono<RefreshAuthResponse> refresh(){
         return Mono.zip(
                 securityContextService.currentUserId(),
                 securityContextService.currentUserRole()
@@ -76,9 +77,9 @@ public class HttpAuthController {
             UUID userId = tuple.getT1();
             String role = tuple.getT2();
 
-            String newToken = jwtService.generateToken(userId.toString(), role);
+            String newToken = jwtService.generateAccessToken(userId.toString(), role);
 
-            return new LoginAuthResponse(newToken);
+            return new RefreshAuthResponse(newToken);
         });
 
     }
