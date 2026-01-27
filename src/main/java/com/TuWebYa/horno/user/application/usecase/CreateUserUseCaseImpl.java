@@ -40,6 +40,8 @@ public class CreateUserUseCaseImpl implements CreateUserUseCase {
                             UserRole.valueOf(command.role())
                     );
 
+                    user.setName(UserName.of(user.getEmail().value().split("@")[0]));
+
                     return userRepositoryPort.save(user)
                             .map(saved -> new CreateUserResponse(
                                     saved.getId().toString(),
