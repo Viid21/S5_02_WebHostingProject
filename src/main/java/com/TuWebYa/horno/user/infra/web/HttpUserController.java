@@ -76,6 +76,14 @@ public class HttpUserController {
         });
     }
 
+    @GetMapping("/me")
+    public Mono<RetrieveUserResponse> me() {
+        return securityContextService.currentUserId()
+                .flatMap(userId -> retrieveUserUseCase.retrieveById(
+                        new RetrieveUserQuery(userId, "SELF")
+                ));
+    }
+
     @GetMapping
     public Flux<RetrieveUserResponse> retrieveAll() {
         return securityContextService.currentUserRole()
@@ -149,9 +157,9 @@ public class HttpUserController {
     @DeleteMapping("/{id}")
     public Mono<ResponseEntity<Void>> delete(@PathVariable UUID id) {
         return Mono.zip(
-                securityContextService.currentUserId(),
-                securityContextService.currentUserRole())
-                .flatMap( tuple -> {
+                        securityContextService.currentUserId(),
+                        securityContextService.currentUserRole())
+                .flatMap(tuple -> {
                     UUID authenticatedUserId = tuple.getT1();
                     String userRole = tuple.getT2();
 
