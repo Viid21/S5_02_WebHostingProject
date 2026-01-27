@@ -23,12 +23,7 @@ public class SecurityConfig {
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
                 .authorizeExchange(exchanges -> exchanges
                         // Endpoints públicos
-                        .pathMatchers("/auth/login", "/auth/register").permitAll()
-                        .pathMatchers("/public/**").permitAll()
-
-                        // Endpoints solo para ADMIN
-                        .pathMatchers("/admin/**").hasAuthority("ADMIN")
-
+                        .pathMatchers("/auth/**").permitAll()
                         // Todos lo demás requiere JWT
                         .anyExchange().authenticated()
                 )
