@@ -1,8 +1,10 @@
 package com.TuWebYa.horno.auth.application.usecase;
 
 import com.TuWebYa.horno.auth.application.dto.response.LoginAuthResponse;
+import com.TuWebYa.horno.auth.application.exception.InvalidCredentialsException;
 import com.TuWebYa.horno.auth.application.port.in.LoginUseCase;
 import com.TuWebYa.horno.auth.infra.security.JwtService;
+import com.TuWebYa.horno.user.application.exception.UserNotFoundException;
 import com.TuWebYa.horno.user.application.port.out.UserRepositoryPort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,10 +26,10 @@ public class LoginUseCaseImpl implements LoginUseCase {
 
     public Mono<LoginAuthResponse> login(String email, String password) {
         return userRepositoryPort.findByEmail(email)
-                .switchIfEmpty(Mono.error(new RuntimeException("User not found")))
+                .switchIfEmpty(Mono.error(new UserNotFoundException("User not found.")))
                 .flatMap(user -> {
                     if (!passwordEncoder.matches(password, user.getPassword().hashed())) {
-                        return Mono.error(new RuntimeException("Invalid credentials"));
+                        return Mono.error(new InvalidCredentialsException());
                     }
 
                     String token = jwtService.generateToken(

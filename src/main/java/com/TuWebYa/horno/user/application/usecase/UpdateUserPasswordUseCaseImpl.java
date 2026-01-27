@@ -1,11 +1,11 @@
 package com.TuWebYa.horno.user.application.usecase;
 
 import com.TuWebYa.horno.user.application.command.UpdateUserPasswordCommand;
-import com.TuWebYa.horno.user.application.exception.AuthIncorrectPasswordException;
 import com.TuWebYa.horno.user.application.exception.UserForbiddenException;
 import com.TuWebYa.horno.user.application.exception.UserNotFoundException;
 import com.TuWebYa.horno.user.application.port.in.UpdateUserPasswordUseCase;
 import com.TuWebYa.horno.user.application.port.out.UserRepositoryPort;
+import com.TuWebYa.horno.user.domain.exception.InvalidPasswordException;
 import com.TuWebYa.horno.user.domain.model.UserPassword;
 import reactor.core.publisher.Mono;
 
@@ -28,7 +28,7 @@ public class UpdateUserPasswordUseCaseImpl implements UpdateUserPasswordUseCase 
 
                             if (command.authenticatedUserRole().equals("USER")) {
                                 if (!user.getPassword().matches(command.oldPassword())) {
-                                    return Mono.error(new AuthIncorrectPasswordException());
+                                    return Mono.error(new InvalidPasswordException("Passwords cannot be the same"));
                                 }
                             }
                             user.setPassword(UserPassword.fromPlainText(command.newPassword()));
