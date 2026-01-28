@@ -19,7 +19,8 @@ public class UserMapper {
     public static User toDomain(UserEntity entity) {
         User user = new User(
                 UserEmail.of(entity.email()),
-                UserPassword.fromHashed(entity.password())
+                UserPassword.fromHashed(entity.password()),
+                UserRole.valueOf(entity.role())
         );
         user.setId(UserId.from(String.valueOf(entity.id())));
         user.setName(UserName.of(entity.name()));
