@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    container_name: tuwebya-users-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: tuwebya-users
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: .
+    container_name: tuwebya-backend
+    restart: always
+    depends_on:
+      - db
+    environment:
+      SPRING_R2DBC_URL: r2dbc:postgresql://db:5432/tuwebya
+      SPRING_R2DBC_USERNAME: postgres
+      SPRING_R2DBC_PASSWORD: postgres
+      SECURITY_JWT_SECRET: "aP9xL2mS8vQ4tZ7rC6bN1kH3yW5uE0fG"
+    ports:
+      - "8080:8080"
+    networks:
+      - tuwebya-net
+
+volumes:
+  postgres_data:
+
+networks:
+  tuwebya-net:
