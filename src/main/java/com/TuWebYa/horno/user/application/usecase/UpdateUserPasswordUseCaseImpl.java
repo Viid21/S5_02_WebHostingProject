@@ -7,8 +7,10 @@ import com.TuWebYa.horno.user.application.port.in.UpdateUserPasswordUseCase;
 import com.TuWebYa.horno.user.application.port.out.UserRepositoryPort;
 import com.TuWebYa.horno.user.domain.exception.InvalidPasswordException;
 import com.TuWebYa.horno.user.domain.model.UserPassword;
+import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+@Service
 public class UpdateUserPasswordUseCaseImpl implements UpdateUserPasswordUseCase {
     private final UserRepositoryPort userRepositoryPort;
 
