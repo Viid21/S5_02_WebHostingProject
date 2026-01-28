@@ -47,16 +47,18 @@ public class HttpAuthController {
 
                     return createUserUseCase.createUser(command)
                             .flatMap(user -> {
-                                String token = jwtService.generateAccessToken(
+                                String accessToken = jwtService.generateAccessToken(
                                         user.id(),
                                         user.role()
                                 );
 
+                                String refreshToken = jwtService.generateRefreshToken(
+                                        user.id()
+                                );
+
                                 RegisterAuthResponse response = new RegisterAuthResponse(
-                                        user.id(),
-                                        user.email(),
-                                        user.role(),
-                                        token
+                                        accessToken,
+                                        refreshToken
                                 );
                                 return Mono.just(ResponseEntity.ok(response));
                             });
