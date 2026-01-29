@@ -40,7 +40,11 @@ public class CreateUserUseCaseImpl implements CreateUserUseCase {
                             UserRole.valueOf(command.role())
                     );
 
-                    user.setName(UserName.of(user.getEmail().value().split("@")[0]));
+                    String raw = command.email().split("@")[0];
+                    String cleaned = raw.replaceAll("[^A-Za-z]", "");
+                    String capitalized = cleaned.substring(0,1).toUpperCase() + cleaned.substring(1);
+
+                    user.setName(UserName.of(capitalized));
 
                     return userRepositoryPort.save(user)
                             .map(saved -> new CreateUserResponse(
