@@ -6,13 +6,15 @@ services:
     container_name: tuwebya-users-db
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: vid
+      POSTGRES_PASSWORD: Estegosaurio9000
       POSTGRES_DB: tuwebya-users
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - tuwebya-net   # ← FALTA ESTO
 
   backend:
     build: .
@@ -21,9 +23,9 @@ services:
     depends_on:
       - db
     environment:
-      SPRING_R2DBC_URL: r2dbc:postgresql://db:5432/tuwebya
-      SPRING_R2DBC_USERNAME: postgres
-      SPRING_R2DBC_PASSWORD: postgres
+      SPRING_R2DBC_URL: r2dbc:postgresql://db:5432/tuwebya-users
+      SPRING_R2DBC_USERNAME: vid
+      SPRING_R2DBC_PASSWORD: Estegosaurio9000
       SECURITY_JWT_SECRET: "aP9xL2mS8vQ4tZ7rC6bN1kH3yW5uE0fG"
     ports:
       - "8080:8080"
