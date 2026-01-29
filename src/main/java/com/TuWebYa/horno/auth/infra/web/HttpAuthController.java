@@ -35,33 +35,21 @@ public class HttpAuthController {
     }
 
     @PostMapping("/register")
-    public Mono<ResponseEntity<RegisterAuthResponse>> register(Mono<RegisterAuthRequest> monoRequest) {
-        return monoRequest
-                .flatMap(request -> {
-                    CreateUserCommand command = new CreateUserCommand(
-                            request.email(),
-                            request.password(),
-                            "USER",
-                            "SUPERADMIN"
-                    );
+    public Mono<ResponseEntity<RegisterAuthResponse>> register(@RequestBody RegisterAuthRequest request) {
+        System.out.println("REGISTER REQUEST: " + request);
+        CreateUserCommand command = new CreateUserCommand(
+                request.email(),
+                request.password(),
+                "USER",
+                "SUPERADMIN"
+        );
 
-                    return createUserUseCase.createUser(command)
-                            .flatMap(user -> {
-                                String accessToken = jwtService.generateAccessToken(
-                                        user.id(),
-                                        user.role()
-                                );
+        return createUserUseCase.createUser(command)
+                .map(user -> {
+                    String accessToken = jwtService.generateAccessToken(user.id(), user.role());
+                    String refreshToken = jwtService.generateRefreshToken(user.id());
 
-                                String refreshToken = jwtService.generateRefreshToken(
-                                        user.id()
-                                );
-
-                                RegisterAuthResponse response = new RegisterAuthResponse(
-                                        accessToken,
-                                        refreshToken
-                                );
-                                return Mono.just(ResponseEntity.ok(response));
-                            });
+                    return ResponseEntity.ok(new RegisterAuthResponse(accessToken, refreshToken));
                 });
     }
 
