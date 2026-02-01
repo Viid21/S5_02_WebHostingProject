@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserForbiddenException.class)
     public Mono<ResponseEntity<String>> handleUserForbidden(UserForbiddenException ex) {
-        return Mono.just(ResponseEntity.badRequest().body(ex.getMessage()));
+        return Mono.just(ResponseEntity.status(403).body(ex.getMessage()));
     }
 
     @ExceptionHandler(InvalidCredentialsException.class)
