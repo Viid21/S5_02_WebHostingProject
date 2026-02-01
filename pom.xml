@@ -157,6 +157,13 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- PostgreSQL JDBC Driver for Testcontainers -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
