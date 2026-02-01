@@ -80,7 +80,7 @@ public class HttpUserController {
     public Mono<RetrieveUserResponse> me() {
         return securityContextService.currentUserId()
                 .flatMap(userId -> retrieveUserUseCase.retrieveById(
-                        new RetrieveUserQuery(userId, "SELF")
+                        new RetrieveUserQuery(userId, userId, "SELF")
                 ));
     }
 
@@ -94,13 +94,16 @@ public class HttpUserController {
 
     @GetMapping("/{id}")
     public Mono<RetrieveUserResponse> retrieve(@PathVariable UUID id) {
-        return securityContextService.currentUserRole()
-                .flatMap(userRole -> retrieveUserUseCase.retrieveById(
-                        new RetrieveUserQuery(
-                                id,
-                                userRole
-                        )
-                ));
+        return Mono.zip(
+                securityContextService.currentUserId(),
+                securityContextService.currentUserRole()
+        ).flatMap(tuple -> {
+            UUID authenticatedUserId = tuple.getT1();
+            String userRole = tuple.getT2();
+            return retrieveUserUseCase.retrieveById(
+                    new RetrieveUserQuery(id, authenticatedUserId, userRole)
+            );
+        });
     }
 
     @PutMapping("/{id}")
