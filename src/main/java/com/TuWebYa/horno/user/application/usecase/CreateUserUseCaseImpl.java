@@ -48,7 +48,7 @@ public class CreateUserUseCaseImpl implements CreateUserUseCase {
 
                     return userRepositoryPort.save(user)
                             .map(saved -> new CreateUserResponse(
-                                    saved.getId().toString(),
+                                    saved.getId().value().toString(),
                                     saved.getName().value(),
                                     saved.getEmail().value(),
                                     saved.getRole().name()
