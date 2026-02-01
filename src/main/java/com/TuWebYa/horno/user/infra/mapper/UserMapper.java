@@ -13,10 +13,7 @@ public class UserMapper {
 
         if (user.getId() != null) {
             entity.setId(user.getId().value());
-        } else {
-            entity.setId(UUID.randomUUID());
         }
-
         entity.setEmail(user.getEmail().value());
         entity.setPassword(user.getPassword().hashed());
         entity.setRole(user.getRole().toString());
