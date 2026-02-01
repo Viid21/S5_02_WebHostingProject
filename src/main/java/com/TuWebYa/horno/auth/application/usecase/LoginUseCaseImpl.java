@@ -26,7 +26,7 @@ public class LoginUseCaseImpl implements LoginUseCase {
 
     public Mono<LoginAuthResponse> login(String email, String password) {
         return userRepositoryPort.findByEmail(email)
-                .switchIfEmpty(Mono.error(new UserNotFoundException("User not found.")))
+                .switchIfEmpty(Mono.error(new InvalidCredentialsException()))
                 .flatMap(user -> {
                     if (!passwordEncoder.matches(password, user.getPassword().hashed())) {
                         return Mono.error(new InvalidCredentialsException());
