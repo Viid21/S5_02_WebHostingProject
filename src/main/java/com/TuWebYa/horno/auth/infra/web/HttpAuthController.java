@@ -36,7 +36,6 @@ public class HttpAuthController {
 
     @PostMapping("/register")
     public Mono<ResponseEntity<RegisterAuthResponse>> register(@RequestBody RegisterAuthRequest request) {
-        System.out.println("REGISTER REQUEST: " + request);
         CreateUserCommand command = new CreateUserCommand(
                 request.email(),
                 request.password(),
@@ -59,7 +58,7 @@ public class HttpAuthController {
     }
 
     @PostMapping("/refresh")
-    public Mono<RefreshAuthResponse> refresh(){
+    public Mono<RefreshAuthResponse> refresh() {
         return Mono.zip(
                 securityContextService.currentUserId(),
                 securityContextService.currentUserRole()
