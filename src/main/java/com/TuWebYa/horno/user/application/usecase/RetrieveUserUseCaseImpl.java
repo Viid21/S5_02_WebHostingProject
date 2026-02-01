@@ -24,11 +24,17 @@ public class RetrieveUserUseCaseImpl implements RetrieveUserUseCase {
         return userRepositoryPort.findById(query.id())
                 .switchIfEmpty(Mono.error(new UserNotFoundException("User with id: " + query.id() + " not found.")))
                 .flatMap(user -> {
-                    if (query.authenticatedUserRole().equals("USER")) {
+                    // Allow if user is retrieving their own information, or if they have admin role
+                    boolean isOwnUser = query.authenticatedUserId() != null 
+                            && query.authenticatedUserId().equals(query.id());
+                    boolean isAdmin = !query.authenticatedUserRole().equals("USER");
+                    
+                    if (!isOwnUser && !isAdmin) {
                         return Mono.error(new UserForbiddenException());
                     }
+                    
                     return Mono.just(new RetrieveUserResponse(
-                            user.getId().toString(),
+                            user.getId().value().toString(),
                             user.getName().value(),
                             user.getEmail().value(),
                             user.getRole().name()
@@ -45,7 +51,7 @@ public class RetrieveUserUseCaseImpl implements RetrieveUserUseCase {
                         return Mono.error(new UserForbiddenException());
                     }
                     return Mono.just(new RetrieveUserResponse(
-                            user.getId().toString(),
+                            user.getId().value().toString(),
                             user.getName().value(),
                             user.getEmail().value(),
                             user.getRole().name()
