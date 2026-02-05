@@ -1,6 +1,7 @@
 package com.TuWebYa.horno;
 
 import com.TuWebYa.horno.auth.application.exception.InvalidCredentialsException;
+import com.TuWebYa.horno.auth.application.query.LoginQuery;
 import com.TuWebYa.horno.auth.application.usecase.LoginUseCaseImpl;
 import com.TuWebYa.horno.auth.infra.security.JwtService;
 import com.TuWebYa.horno.user.application.port.out.UserRepositoryPort;
@@ -48,7 +49,7 @@ class LoginUseCaseTest {
         when(jwtService.generateRefreshToken("539490b3-471e-44f4-b256-818262d2a0a3"))
                 .thenReturn("REFRESH");
 
-        loginUseCase.login("email@test.com", "1234")
+        loginUseCase.login(new LoginQuery("email@test.com", "1234"))
                 .as(StepVerifier::create)
                 .expectNextMatches(res ->
                         res.accessToken().equals("ACCESS") &&
@@ -62,7 +63,7 @@ class LoginUseCaseTest {
         when(userRepository.findByEmail("missing@test.com"))
                 .thenReturn(Mono.empty());
 
-        loginUseCase.login("missing@test.com", "1234")
+        loginUseCase.login(new LoginQuery("missing@test.com", "1234"))
                 .as(StepVerifier::create)
                 .expectErrorMatches(err ->
                         err instanceof InvalidCredentialsException &&
@@ -83,7 +84,7 @@ class LoginUseCaseTest {
         when(passwordEncoder.matches(eq("wrong"), anyString()))
                 .thenReturn(false);
 
-        loginUseCase.login("email@test.com", "wrong")
+        loginUseCase.login(new LoginQuery("email@test.com", "wrong"))
                 .as(StepVerifier::create)
                 .expectErrorMatches(err ->
                         err instanceof InvalidCredentialsException &&

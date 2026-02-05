@@ -3,6 +3,7 @@ package com.TuWebYa.horno.auth.application.usecase;
 import com.TuWebYa.horno.auth.application.dto.response.LoginAuthResponse;
 import com.TuWebYa.horno.auth.application.exception.InvalidCredentialsException;
 import com.TuWebYa.horno.auth.application.port.in.LoginUseCase;
+import com.TuWebYa.horno.auth.application.query.LoginQuery;
 import com.TuWebYa.horno.auth.infra.security.JwtService;
 import com.TuWebYa.horno.user.application.exception.UserNotFoundException;
 import com.TuWebYa.horno.user.application.port.out.UserRepositoryPort;
@@ -24,11 +25,11 @@ public class LoginUseCaseImpl implements LoginUseCase {
         this.jwtService = jwtService;
     }
 
-    public Mono<LoginAuthResponse> login(String email, String password) {
-        return userRepositoryPort.findByEmail(email)
+    public Mono<LoginAuthResponse> login(LoginQuery query) {
+        return userRepositoryPort.findByEmail(query.email())
                 .switchIfEmpty(Mono.error(new InvalidCredentialsException()))
                 .flatMap(user -> {
-                    if (!passwordEncoder.matches(password, user.getPassword().hashed())) {
+                    if (!passwordEncoder.matches(query.password(), user.getPassword().hashed())) {
                         return Mono.error(new InvalidCredentialsException());
                     }
 

@@ -1,11 +1,13 @@
 package com.TuWebYa.horno.auth.infra.web;
 
+import com.TuWebYa.horno.auth.application.dto.request.ForgotPasswordRequest;
 import com.TuWebYa.horno.auth.application.dto.request.LoginAuthRequest;
 import com.TuWebYa.horno.auth.application.dto.request.RegisterAuthRequest;
 import com.TuWebYa.horno.auth.application.dto.response.LoginAuthResponse;
 import com.TuWebYa.horno.auth.application.dto.response.RefreshAuthResponse;
 import com.TuWebYa.horno.auth.application.dto.response.RegisterAuthResponse;
 import com.TuWebYa.horno.auth.application.port.in.LoginUseCase;
+import com.TuWebYa.horno.auth.application.query.LoginQuery;
 import com.TuWebYa.horno.auth.infra.security.JwtService;
 import com.TuWebYa.horno.auth.infra.security.SecurityContextService;
 import com.TuWebYa.horno.user.application.command.CreateUserCommand;
@@ -54,7 +56,27 @@ public class HttpAuthController {
 
     @PostMapping("/login")
     public Mono<LoginAuthResponse> login(@RequestBody LoginAuthRequest request) {
-        return loginUseCase.login(request.email(), request.password());
+        return loginUseCase.login(new LoginQuery(request.email(), request.password()));
+    }
+
+    @PostMapping("/forgot-password")
+    public Mono<ResponseEntity<Void>> forgotPassword(@RequestBody ForgotPasswordRequest request) {
+        return forgotPasswordUseCase(new ForgotPasswordCommand(request.mail()));
+        return userRepositoryPort.findByEmail(request.email())
+                .flatMap(user -> {
+                    String token = jwtService.generateResetPasswordToken(user.id().toString());
+
+                    String resetLink = "https://tuwebya.com/reset-password?token=" + token;
+
+                    // TODO: enviar email real
+                    System.out.println("RESET LINK PARA " + user.email() + ": " + resetLink);
+
+                    // cuando tengas EmailService:
+                    // return emailService.sendResetPasswordEmail(user.email(), resetLink).then(Mono.just(user));
+
+                    return Mono.just(user);
+                })
+                .then(Mono.just(ResponseEntity.ok().<Void>build()));
     }
 
     @PostMapping("/refresh")

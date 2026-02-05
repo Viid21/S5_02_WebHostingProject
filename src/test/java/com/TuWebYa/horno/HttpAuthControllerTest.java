@@ -6,6 +6,7 @@ import com.TuWebYa.horno.auth.application.dto.response.LoginAuthResponse;
 import com.TuWebYa.horno.auth.application.dto.response.RefreshAuthResponse;
 import com.TuWebYa.horno.auth.application.dto.response.RegisterAuthResponse;
 import com.TuWebYa.horno.auth.application.port.in.LoginUseCase;
+import com.TuWebYa.horno.auth.application.query.LoginQuery;
 import com.TuWebYa.horno.auth.infra.security.JwtService;
 import com.TuWebYa.horno.auth.infra.security.SecurityContextService;
 import com.TuWebYa.horno.auth.infra.web.HttpAuthController;
@@ -92,7 +93,7 @@ class HttpAuthControllerTest {
     void login_shouldReturnLoginResponse() {
         LoginAuthResponse response = new LoginAuthResponse("ACCESS", "REFRESH");
 
-        when(loginUseCase.login("email@test.com", "1234"))
+        when(loginUseCase.login(new LoginQuery("email@test.com", "1234")))
                 .thenReturn(Mono.just(response));
 
         LoginAuthRequest request = new LoginAuthRequest("email@test.com", "1234");
