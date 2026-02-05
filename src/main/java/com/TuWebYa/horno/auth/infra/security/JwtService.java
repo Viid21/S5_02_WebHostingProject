@@ -16,6 +16,12 @@ public class JwtService {
     private final SecretKey secretKey;
 
     public JwtService(@Value("${security.jwt.secret}") String secret) {
+        if (secret == null || secret.trim().isEmpty()) {
+            throw new IllegalArgumentException("JWT secret cannot be null or empty");
+        }
+        if (secret.length() < 32) {
+            throw new IllegalArgumentException("JWT secret must be at least 32 characters long for HS256");
+        }
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
@@ -51,11 +57,21 @@ public class JwtService {
     }
 
     public String extractUserId(String token) {
-        return extractAllClaims(token).getSubject();
+        Claims claims = extractAllClaims(token);
+        String subject = claims.getSubject();
+        if (subject == null || subject.trim().isEmpty()) {
+            throw new JwtException("Token does not contain valid subject (userId)");
+        }
+        return subject;
     }
 
     public String extractRole(String token) {
-        return extractAllClaims(token).get("role", String.class);
+        Claims claims = extractAllClaims(token);
+        String role = claims.get("role", String.class);
+        if (role == null) {
+            throw new JwtException("Token does not contain role claim");
+        }
+        return role;
     }
 
     private Claims extractAllClaims(String token) {
