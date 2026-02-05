@@ -40,7 +40,7 @@ public class HttpAuthController {
                 request.email(),
                 request.password(),
                 "USER",
-                "SUPERADMIN"
+                "PUBLIC"
         );
 
         return createUserUseCase.createUser(command)
