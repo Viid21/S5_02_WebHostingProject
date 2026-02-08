@@ -28,8 +28,12 @@ public class CreateUserUseCaseImpl implements CreateUserUseCase {
                         return Mono.error(new InvalidEmailException("A user with that email already exists."));
                     }
 
+                    if (command.role().equals("SUPERADMIN")) {
+                        return Mono.error(new UserForbiddenException("Cannot create user with SUPERADMIN role"));
+                    }
+
                     if (!command.authenticatedUserRole().equals("SUPERADMIN")) {
-                        if (command.role().equals("ADMIN") || command.role().equals("SUPERADMIN")) {
+                        if (command.role().equals("ADMIN")) {
                             return Mono.error(new UserForbiddenException());
                         }
                     }
