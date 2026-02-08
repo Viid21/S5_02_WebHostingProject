@@ -201,8 +201,7 @@ class HttpUserControllerTest {
 
         UpdateUserRequest request = new UpdateUserRequest(
                 "UpdatedName",
-                "updated@example.com",
-                "USER"
+                "updated@example.com"
         );
 
         webTestClient.put()
