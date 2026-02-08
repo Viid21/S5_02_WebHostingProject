@@ -30,7 +30,7 @@ public class UpdateUserUseCaseImpl implements UpdateUserUseCase {
 
                     user.setName(command.name() != null ? UserName.of(command.name()) : user.getName());
                     user.setEmail(command.email() != null ? UserEmail.of(command.email()) : user.getEmail());
-                    user.setRole(command.role() != null ? UserRole.valueOf(command.role()) : user.getRole());
+
                     return userRepositoryPort.save(user);
                 })
                 .map(saved -> new UpdateUserResponse(

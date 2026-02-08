@@ -14,7 +14,6 @@ import com.TuWebYa.horno.user.application.dto.request.CreateUserRequest;
 import com.TuWebYa.horno.user.application.dto.response.CreateUserResponse;
 import com.TuWebYa.horno.user.application.query.RetrieveUserAllQuery;
 import com.TuWebYa.horno.user.application.query.RetrieveUserQuery;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -25,7 +24,6 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/user")
-@Tag(name = "Users", description = "Operations related to users management")
 public class HttpUserController {
     private final SecurityContextService securityContextService;
     private final CreateUserUseCase createUserUseCase;
@@ -33,6 +31,7 @@ public class HttpUserController {
     private final UpdateUserUseCase updateUserUseCase;
     private final UpdateUserPasswordUseCase updateUserPasswordUseCase;
     private final DeleteUserUseCase deleteUserUseCase;
+    private final ChangeUserRoleUseCase changeUserRoleUseCase;
 
 
     public HttpUserController(
@@ -40,40 +39,35 @@ public class HttpUserController {
             RetrieveUserUseCase retrieveUserUseCase,
             UpdateUserUseCase updateUserUseCase,
             UpdateUserPasswordUseCase updateUserPasswordUseCase,
-            DeleteUserUseCase deleteUserUseCase) {
+            DeleteUserUseCase deleteUserUseCase,
+            ChangeUserRoleUseCase changeUserRoleUseCase) {
         this.securityContextService = securityContextService;
         this.createUserUseCase = createUserUseCase;
         this.retrieveUserUseCase = retrieveUserUseCase;
         this.updateUserUseCase = updateUserUseCase;
         this.updateUserPasswordUseCase = updateUserPasswordUseCase;
         this.deleteUserUseCase = deleteUserUseCase;
+        this.changeUserRoleUseCase = changeUserRoleUseCase;
     }
 
     @PostMapping("/new")
-    public Mono<ResponseEntity<CreateUserResponse>> create(@RequestBody Mono<CreateUserRequest> requestMono) {
-
-        return Mono.zip(
-                requestMono,
-                securityContextService.currentUserRole()
-        ).flatMap(tuple -> {
-
-            CreateUserRequest request = tuple.getT1();
-            String userRole = tuple.getT2();
-
-            CreateUserCommand command = new CreateUserCommand(
-                    request.email(),
-                    request.password(),
-                    request.role(),
-                    userRole
-            );
-
-            return createUserUseCase.createUser(command)
-                    .map(response ->
-                            ResponseEntity
-                                    .created(URI.create("/user/" + response.id()))
-                                    .body(response)
+    public Mono<ResponseEntity<CreateUserResponse>> create(@RequestBody CreateUserRequest request) {
+        return securityContextService.currentUserRole()
+                .flatMap(userRole -> {
+                    CreateUserCommand command = new CreateUserCommand(
+                            request.email(),
+                            request.password(),
+                            request.role(),
+                            userRole
                     );
-        });
+
+                    return createUserUseCase.createUser(command)
+                            .map(response ->
+                                    ResponseEntity
+                                            .created(URI.create("/user/" + response.id()))
+                                            .body(response)
+                            );
+                });
     }
 
     @GetMapping("/me")
@@ -109,21 +103,19 @@ public class HttpUserController {
     @PutMapping("/{id}")
     public Mono<UpdateUserResponse> update(
             @PathVariable UUID id,
-            @RequestBody Mono<UpdateUserRequest> requestMono) {
+            @RequestBody UpdateUserRequest request) {
         return Mono.zip(
-                        requestMono,
                         securityContextService.currentUserId(),
                         securityContextService.currentUserRole())
                 .flatMap(tuple -> {
-                    UpdateUserRequest request = tuple.getT1();
-                    UUID authenticatedUserId = tuple.getT2();
-                    String userRole = tuple.getT3();
+                    UUID authenticatedUserId = tuple.getT1();
+                    String userRole = tuple.getT2();
 
                     UpdateUserCommand command = new UpdateUserCommand(
                             id,
                             request.name(),
                             request.email(),
-                            request.role(),
+                            null, // El rol no se puede cambiar desde este endpoint
                             authenticatedUserId,
                             userRole
                     );
@@ -134,15 +126,13 @@ public class HttpUserController {
     @PutMapping("/{id}/password")
     public Mono<ResponseEntity<Void>> updatePassword(
             @PathVariable UUID id,
-            @RequestBody Mono<UpdateUserPasswordRequest> requestMono) {
+            @RequestBody UpdateUserPasswordRequest request) {
         return Mono.zip(
-                        requestMono,
                         securityContextService.currentUserId(),
                         securityContextService.currentUserRole())
                 .flatMap(tuple -> {
-                    UpdateUserPasswordRequest request = tuple.getT1();
-                    UUID authenticatedUserId = tuple.getT2();
-                    String userRole = tuple.getT3();
+                    UUID authenticatedUserId = tuple.getT1();
+                    String userRole = tuple.getT2();
 
                     UpdateUserPasswordCommand command = new UpdateUserPasswordCommand(
                             id,
@@ -152,8 +142,8 @@ public class HttpUserController {
                             userRole
                     );
 
-                    return updateUserPasswordUseCase.updatePassword(command).thenReturn(ResponseEntity.noContent()
-                            .build());
+                    return updateUserPasswordUseCase.updatePassword(command)
+                            .thenReturn(ResponseEntity.noContent().build());
                 });
     }
 
@@ -174,5 +164,28 @@ public class HttpUserController {
 
                     return deleteUserUseCase.deleteUser(command).thenReturn(ResponseEntity.noContent().build());
                 });
+    }
+    
+    @PutMapping("/{id}/role")
+    public Mono<UpdateUserResponse> changeRole(
+            @PathVariable UUID id,
+            @RequestBody com.TuWebYa.horno.user.application.dto.request.ChangeUserRoleRequest request) {
+        return Mono.zip(
+                securityContextService.currentUserId(),
+                securityContextService.currentUserRole()
+        ).flatMap(tuple -> {
+            UUID authenticatedUserId = tuple.getT1();
+            String userRole = tuple.getT2();
+            
+            com.TuWebYa.horno.user.application.command.ChangeUserRoleCommand command =
+                    new com.TuWebYa.horno.user.application.command.ChangeUserRoleCommand(
+                            id,
+                            request.newRole(),
+                            authenticatedUserId,
+                            userRole
+                    );
+            
+            return changeUserRoleUseCase.changeRole(command);
+        });
     }
 }
