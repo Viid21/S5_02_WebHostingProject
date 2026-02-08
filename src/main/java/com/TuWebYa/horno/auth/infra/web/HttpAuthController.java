@@ -6,7 +6,9 @@ import com.TuWebYa.horno.auth.application.dto.request.RegisterAuthRequest;
 import com.TuWebYa.horno.auth.application.dto.response.LoginAuthResponse;
 import com.TuWebYa.horno.auth.application.dto.response.RefreshAuthResponse;
 import com.TuWebYa.horno.auth.application.dto.response.RegisterAuthResponse;
+import com.TuWebYa.horno.auth.application.port.in.ForgotPasswordUseCase;
 import com.TuWebYa.horno.auth.application.port.in.LoginUseCase;
+import com.TuWebYa.horno.auth.application.query.ForgotPasswordQuery;
 import com.TuWebYa.horno.auth.application.query.LoginQuery;
 import com.TuWebYa.horno.auth.infra.security.JwtService;
 import com.TuWebYa.horno.auth.infra.security.SecurityContextService;
@@ -25,15 +27,17 @@ public class HttpAuthController {
     private final JwtService jwtService;
     private final LoginUseCase loginUseCase;
     private final SecurityContextService securityContextService;
+    private final ForgotPasswordUseCase forgotPasswordUseCase;
 
     public HttpAuthController(CreateUserUseCase createUserUseCase,
                               JwtService jwtService,
                               LoginUseCase loginUseCase,
-                              SecurityContextService securityContextService) {
+                              SecurityContextService securityContextService, ForgotPasswordUseCase forgotPasswordUseCase) {
         this.createUserUseCase = createUserUseCase;
         this.jwtService = jwtService;
         this.loginUseCase = loginUseCase;
         this.securityContextService = securityContextService;
+        this.forgotPasswordUseCase = forgotPasswordUseCase;
     }
 
     @PostMapping("/register")
@@ -61,21 +65,7 @@ public class HttpAuthController {
 
     @PostMapping("/forgot-password")
     public Mono<ResponseEntity<Void>> forgotPassword(@RequestBody ForgotPasswordRequest request) {
-        return forgotPasswordUseCase(new ForgotPasswordCommand(request.mail()));
-        return userRepositoryPort.findByEmail(request.email())
-                .flatMap(user -> {
-                    String token = jwtService.generateResetPasswordToken(user.id().toString());
-
-                    String resetLink = "https://tuwebya.com/reset-password?token=" + token;
-
-                    // TODO: enviar email real
-                    System.out.println("RESET LINK PARA " + user.email() + ": " + resetLink);
-
-                    // cuando tengas EmailService:
-                    // return emailService.sendResetPasswordEmail(user.email(), resetLink).then(Mono.just(user));
-
-                    return Mono.just(user);
-                })
+        return forgotPasswordUseCase.sendEmail(new ForgotPasswordQuery(request.mail()))
                 .then(Mono.just(ResponseEntity.ok().<Void>build()));
     }
 
@@ -92,7 +82,6 @@ public class HttpAuthController {
 
             return new RefreshAuthResponse(newToken);
         });
-
     }
 
     @GetMapping("/validate")

@@ -81,4 +81,39 @@ public class JwtService {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
+    public String generateResetPasswordToken(String userId) {
+        // expiración corta, por ejemplo 30 minutos
+        long expirationMillis = 30 * 60 * 1000;
+
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + expirationMillis);
+
+        return Jwts.builder()
+                .setSubject(userId)
+                .claim("type", "RESET_PASSWORD")
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public String validateResetPasswordToken(String token) {
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            String type = claims.get("type", String.class);
+            if (!"RESET_PASSWORD".equals(type)) {
+                throw new RuntimeException("Invalid token type");
+            }
+
+            return claims.getSubject(); // userId
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new RuntimeException("Invalid or expired token");
+        }
+    }
 }
