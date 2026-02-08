@@ -16,16 +16,29 @@ services:
     networks:
       - tuwebya-net   # ← FALTA ESTO
 
+  mongodb:
+    image: mongo:7
+    container_name: tuwebya-mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - tuwebya-net
+
   backend:
     build: .
     container_name: tuwebya-backend
     restart: always
     depends_on:
       - db
+      - mongodb
     environment:
       SPRING_R2DBC_URL: r2dbc:postgresql://db:5432/tuwebya-users
       SPRING_R2DBC_USERNAME: vid
       SPRING_R2DBC_PASSWORD: Estegosaurio9000
+      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/tuwebya
       SECURITY_JWT_SECRET: "aP9xL2mS8vQ4tZ7rC6bN1kH3yW5uE0fG"
     ports:
       - "8080:8080"
@@ -34,6 +47,7 @@ services:
 
 volumes:
   postgres_data:
+  mongodb_data:
 
 networks:
   tuwebya-net:
