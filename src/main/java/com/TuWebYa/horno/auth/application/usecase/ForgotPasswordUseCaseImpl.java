@@ -27,8 +27,6 @@ public class ForgotPasswordUseCaseImpl implements ForgotPasswordUseCase {
 
                     // TODO: enviar email real
                     System.out.println("RESET LINK PARA " + user.getEmail() + ": " + resetLink);
-
-                    // cuando tengas EmailService:
                     // return emailService.sendResetPasswordEmail(user.email(), resetLink).then(Mono.just(user));
 
                     return Mono.empty();

@@ -5,7 +5,11 @@ public record FormSubmissionResponse(
         boolean userCreated,
         String temporaryPassword,
         boolean formExists,
-        boolean projectCreated
-) {
-}
+        boolean projectCreated,
+        String accessToken,
+        String refreshToken,
+        String userId,
+        String formId,
+        String projectId
+) {}
 
