@@ -1,17 +1,15 @@
 package com.TuWebYa.horno.forms.infra.mapper;
 
 import com.TuWebYa.horno.forms.domain.model.*;
-import com.TuWebYa.horno.forms.infra.entity.FormEntity;
+import com.TuWebYa.horno.forms.infra.document.FormDocument;
 import com.TuWebYa.horno.user.domain.model.UserEmail;
 import com.TuWebYa.horno.user.domain.model.UserId;
 import org.bson.types.ObjectId;
 
-import java.util.UUID;
-
 public class FormMapper {
     
-    public static FormEntity toEntity(com.TuWebYa.horno.forms.domain.model.Form form) {
-        FormEntity entity = new FormEntity();
+    public static FormDocument toEntity(com.TuWebYa.horno.forms.domain.model.Form form) {
+        FormDocument entity = new FormDocument();
         
         if (form.getId() != null) {
             entity.setId(form.getId().value().toHexString());
@@ -37,7 +35,7 @@ public class FormMapper {
         return entity;
     }
     
-    public static com.TuWebYa.horno.forms.domain.model.Form toDomain(FormEntity entity) {
+    public static com.TuWebYa.horno.forms.domain.model.Form toDomain(FormDocument entity) {
         if (entity == null) {
             return null;
         }

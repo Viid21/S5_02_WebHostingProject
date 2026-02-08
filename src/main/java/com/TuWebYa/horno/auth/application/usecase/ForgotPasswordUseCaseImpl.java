@@ -4,8 +4,10 @@ import com.TuWebYa.horno.auth.application.port.in.ForgotPasswordUseCase;
 import com.TuWebYa.horno.auth.application.query.ForgotPasswordQuery;
 import com.TuWebYa.horno.auth.infra.security.JwtService;
 import com.TuWebYa.horno.user.application.port.out.UserRepositoryPort;
+import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+@Service
 public class ForgotPasswordUseCaseImpl implements ForgotPasswordUseCase {
     private final UserRepositoryPort userRepositoryPort;
     private final JwtService jwtService;
