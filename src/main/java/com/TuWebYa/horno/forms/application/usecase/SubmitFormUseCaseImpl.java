@@ -108,7 +108,7 @@ public class SubmitFormUseCaseImpl implements SubmitFormUseCase {
                                                             refreshToken,
                                                             userId.toString(),
                                                             formResponse.id(),
-                                                            projectId.toString()
+                                                            projectId.id()
                                                     )));
                                         });
                             });

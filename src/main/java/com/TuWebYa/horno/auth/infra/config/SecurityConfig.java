@@ -33,6 +33,9 @@ public class SecurityConfig {
                 .authorizeExchange(exchanges -> exchanges
                         .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll() // ← PERMITE PREFLIGHT
                         .pathMatchers("/auth/**").permitAll()
+                        .pathMatchers(HttpMethod.POST, "/forms/submit").permitAll()
+                        .pathMatchers(HttpMethod.GET, "/forms/check/**").permitAll()
+                        .pathMatchers(HttpMethod.GET, "/forms/exists").permitAll()
                         .anyExchange().authenticated()
                 )
                 .addFilterAt(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION)

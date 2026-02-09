@@ -31,33 +31,30 @@ public class JwtAuthenticationFilter implements WebFilter {
         String authHeader = exchange.getRequest().getHeaders().getFirst("Authorization");
         String path = exchange.getRequest().getPath().value();
 
-        // Skip authentication for public endpoints
-        if (path.startsWith("/auth/")) {
+        // 🔥 1. ENDPOINTS PÚBLICOS → NO VALIDAR TOKEN
+        if (path.startsWith("/auth/")
+                || path.equals("/forms/submit")
+                || path.startsWith("/forms/check")
+                || path.startsWith("/forms/exists")) {
+
             return chain.filter(exchange);
         }
 
+        // 🔥 2. SI NO HAY TOKEN → DEJAR PASAR (NO DEVOLVER 401)
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            logger.debug("No Authorization header found for path: {}", path);
-            return Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing or invalid Authorization header"));
+            return chain.filter(exchange);
         }
 
+        // 🔥 3. SI HAY TOKEN → VALIDARLO
         String token = authHeader.substring(7);
 
         if (!jwtService.isValid(token)) {
-            logger.warn("Invalid or expired token for path: {}", path);
             return Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid or expired token"));
         }
 
         try {
             String userId = jwtService.extractUserId(token);
             String role = jwtService.extractRole(token);
-
-            if (userId == null || role == null) {
-                logger.warn("Token missing required claims (userId: {}, role: {})", userId, role);
-                return Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token claims"));
-            }
-
-            logger.debug("Authenticated user: {} with role: {} for path: {}", userId, role, path);
 
             var authentication = new UsernamePasswordAuthenticationToken(
                     userId,
@@ -67,9 +64,9 @@ public class JwtAuthenticationFilter implements WebFilter {
 
             return chain.filter(exchange)
                     .contextWrite(ReactiveSecurityContextHolder.withAuthentication(authentication));
+
         } catch (Exception e) {
-            logger.error("Error processing JWT token for path: {}", path, e);
-            return Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Failed to process token: " + e.getMessage()));
+            return Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Failed to process token"));
         }
     }
 }
