@@ -8,7 +8,7 @@ import com.TuWebYa.horno.forms.application.dto.response.FormSubmissionResponse;
 import com.TuWebYa.horno.forms.application.port.in.CheckFormExistsUseCase;
 import com.TuWebYa.horno.forms.application.port.in.CreateFormUseCase;
 import com.TuWebYa.horno.forms.application.port.in.SubmitFormUseCase;
-import com.TuWebYa.horno.hosting.application.port.in.CreateProjectUseCase;
+import com.TuWebYa.horno.project.application.port.in.CreateProjectUseCase;
 import com.TuWebYa.horno.user.application.command.CreateUserCommand;
 import com.TuWebYa.horno.user.application.port.in.CreateUserUseCase;
 import com.TuWebYa.horno.user.application.port.out.UserRepositoryPort;

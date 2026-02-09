@@ -10,6 +10,7 @@ import com.TuWebYa.horno.forms.application.port.in.CheckFormExistsUseCase;
 import com.TuWebYa.horno.forms.application.port.in.CreateFormUseCase;
 import com.TuWebYa.horno.forms.application.port.in.SubmitFormUseCase;
 import com.TuWebYa.horno.forms.application.port.in.UpdateFormUseCase;
+import com.TuWebYa.horno.forms.application.port.in.GetMyFormUseCase;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -26,6 +27,7 @@ public class HttpFormsController {
     private final CheckFormExistsUseCase checkFormExistsUseCase;
     private final AssignAdminToFormUseCase assignAdminToFormUseCase;
     private final SecurityContextService securityContextService;
+    private final GetMyFormUseCase getMyFormUseCase;
     
     public HttpFormsController(
             SubmitFormUseCase submitFormUseCase,
@@ -33,13 +35,15 @@ public class HttpFormsController {
             UpdateFormUseCase updateFormUseCase,
             CheckFormExistsUseCase checkFormExistsUseCase,
             AssignAdminToFormUseCase assignAdminToFormUseCase,
-            SecurityContextService securityContextService) {
+            SecurityContextService securityContextService,
+            GetMyFormUseCase getMyFormUseCase) {
         this.submitFormUseCase = submitFormUseCase;
         this.createFormUseCase = createFormUseCase;
         this.updateFormUseCase = updateFormUseCase;
         this.checkFormExistsUseCase = checkFormExistsUseCase;
         this.assignAdminToFormUseCase = assignAdminToFormUseCase;
         this.securityContextService = securityContextService;
+        this.getMyFormUseCase = getMyFormUseCase;
     }
     
     @PostMapping("/submit")
@@ -57,7 +61,7 @@ public class HttpFormsController {
     @GetMapping("/exists")
     public Mono<ResponseEntity<Boolean>> checkFormExistsForCurrentUser() {
         return securityContextService.currentUserId()
-                .flatMap(userId -> checkFormExistsUseCase.existsByUserId(userId))
+                .flatMap(checkFormExistsUseCase::existsByUserId)
                 .map(ResponseEntity::ok);
     }
     
@@ -99,6 +103,13 @@ public class HttpFormsController {
             @PathVariable UUID adminId) {
         return securityContextService.currentUserRole()
                 .flatMap(role -> assignAdminToFormUseCase.assignAdmin(formId, adminId, role))
+                .map(ResponseEntity::ok);
+    }
+
+    @GetMapping("/mine")
+    public Mono<ResponseEntity<FormResponse>> getMyForm() {
+        return securityContextService.currentUserId()
+                .flatMap(getMyFormUseCase::getMyForm)
                 .map(ResponseEntity::ok);
     }
 }

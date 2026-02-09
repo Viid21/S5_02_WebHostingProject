@@ -1,9 +1,9 @@
-package com.TuWebYa.horno.hosting.infra.adapter;
+package com.TuWebYa.horno.project.infra.adapter;
 
-import com.TuWebYa.horno.hosting.application.port.out.ProjectRepositoryPort;
-import com.TuWebYa.horno.hosting.domain.model.Project;
-import com.TuWebYa.horno.hosting.infra.mapper.ProjectMapper;
-import com.TuWebYa.horno.hosting.infra.repository.ProjectMongoRepository;
+import com.TuWebYa.horno.project.application.port.out.ProjectRepositoryPort;
+import com.TuWebYa.horno.project.domain.model.Project;
+import com.TuWebYa.horno.project.infra.mapper.ProjectMapper;
+import com.TuWebYa.horno.project.infra.repository.ProjectMongoRepository;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 

@@ -1,10 +1,10 @@
-package com.TuWebYa.horno.hosting.application.usecase;
+package com.TuWebYa.horno.project.application.usecase;
 
 import com.TuWebYa.horno.forms.domain.model.FormId;
-import com.TuWebYa.horno.hosting.application.dto.response.ProjectResponse;
-import com.TuWebYa.horno.hosting.application.port.in.CreateProjectUseCase;
-import com.TuWebYa.horno.hosting.application.port.out.ProjectRepositoryPort;
-import com.TuWebYa.horno.hosting.domain.model.Project;
+import com.TuWebYa.horno.project.application.dto.response.ProjectResponse;
+import com.TuWebYa.horno.project.application.port.in.CreateProjectUseCase;
+import com.TuWebYa.horno.project.application.port.out.ProjectRepositoryPort;
+import com.TuWebYa.horno.project.domain.model.Project;
 import com.TuWebYa.horno.user.domain.model.UserId;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;

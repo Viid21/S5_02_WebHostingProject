@@ -1,4 +1,4 @@
-package com.TuWebYa.horno.forms.infra.document;
+package com.TuWebYa.horno.project.infra.document;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,18 +10,17 @@ import java.util.UUID;
 
 @Data
 @NoArgsConstructor
-@Document(collection = "forms")
-public class FormDocument {
+@Document(collection = "projects")
+public class ProjectDocument {
     @Id
     private String id;
-    private String email;
-    private String businessName;
-    private String businessInfo;
-    private String objectives;
-    private String preferences;
+    private String formId;
     private UUID userId;
+    private String status;
+    private String description;
     private UUID assignedAdminId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
 }
 

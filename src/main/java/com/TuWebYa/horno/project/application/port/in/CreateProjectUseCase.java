@@ -1,6 +1,6 @@
-package com.TuWebYa.horno.hosting.application.port.in;
+package com.TuWebYa.horno.project.application.port.in;
 
-import com.TuWebYa.horno.hosting.application.dto.response.ProjectResponse;
+import com.TuWebYa.horno.project.application.dto.response.ProjectResponse;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;

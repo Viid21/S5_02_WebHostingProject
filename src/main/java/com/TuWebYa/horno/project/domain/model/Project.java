@@ -1,4 +1,4 @@
-package com.TuWebYa.horno.hosting.domain.model;
+package com.TuWebYa.horno.project.domain.model;
 
 import com.TuWebYa.horno.forms.domain.model.FormId;
 import com.TuWebYa.horno.user.domain.model.UserId;

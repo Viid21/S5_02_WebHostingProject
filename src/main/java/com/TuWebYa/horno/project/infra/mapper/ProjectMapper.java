@@ -1,16 +1,16 @@
-package com.TuWebYa.horno.hosting.infra.mapper;
+package com.TuWebYa.horno.project.infra.mapper;
 
 import com.TuWebYa.horno.forms.domain.model.FormId;
-import com.TuWebYa.horno.hosting.domain.model.Project;
-import com.TuWebYa.horno.hosting.domain.model.ProjectId;
-import com.TuWebYa.horno.hosting.domain.model.ProjectStatus;
-import com.TuWebYa.horno.hosting.infra.entity.ProjectEntity;
+import com.TuWebYa.horno.project.domain.model.Project;
+import com.TuWebYa.horno.project.domain.model.ProjectId;
+import com.TuWebYa.horno.project.domain.model.ProjectStatus;
+import com.TuWebYa.horno.project.infra.document.ProjectDocument;
 import com.TuWebYa.horno.user.domain.model.UserId;
 
 public class ProjectMapper {
     
-    public static ProjectEntity toEntity(Project project) {
-        ProjectEntity entity = new ProjectEntity();
+    public static ProjectDocument toEntity(Project project) {
+        ProjectDocument entity = new ProjectDocument();
         if (project.getId() != null) {
             entity.setId(project.getId().toString());
         }
@@ -26,7 +26,7 @@ public class ProjectMapper {
         return entity;
     }
     
-    public static Project toDomain(ProjectEntity entity) {
+    public static Project toDomain(ProjectDocument entity) {
         Project project = new Project(
                 FormId.from(entity.getFormId()),
                 UserId.from(entity.getUserId().toString()),

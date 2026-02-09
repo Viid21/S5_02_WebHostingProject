@@ -1,4 +1,4 @@
-package com.TuWebYa.horno.hosting.domain.model;
+package com.TuWebYa.horno.project.domain.model;
 
 import org.bson.types.ObjectId;
 

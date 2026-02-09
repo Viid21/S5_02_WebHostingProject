@@ -2,6 +2,7 @@ package com.TuWebYa.horno.common.web;
 
 import com.TuWebYa.horno.auth.application.exception.InvalidCredentialsException;
 import com.TuWebYa.horno.forms.application.exception.FormNotFoundException;
+import com.TuWebYa.horno.project.application.exception.ProjectNotFoundException;
 import com.TuWebYa.horno.user.application.exception.UserForbiddenException;
 import com.TuWebYa.horno.user.application.exception.UserNotFoundException;
 import com.TuWebYa.horno.user.domain.exception.InvalidEmailException;
@@ -46,6 +47,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(FormNotFoundException.class)
     public Mono<ResponseEntity<String>> handleFormNotFound(FormNotFoundException ex) {
+        return Mono.just(ResponseEntity.status(404).body(ex.getMessage()));
+    }
+
+    @ExceptionHandler(ProjectNotFoundException.class)
+    public Mono<ResponseEntity<String>> handleProjectNotFound(ProjectNotFoundException ex) {
         return Mono.just(ResponseEntity.status(404).body(ex.getMessage()));
     }
 }
